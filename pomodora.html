@@ -1,0 +1,216 @@
+<!DOCTYPE html>
+<html lang="pt">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pomodora🍎</title>
+    <style>
+        body {
+            background: #1C3150;
+        }
+
+        .cronometro {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 60vh;
+        }
+
+        canvas {
+            position: absolute;
+            background: #78ACC1;
+            border-radius: 100%;
+        }
+
+        .clock {
+            position: absolute;
+            color: white;
+            font-size: 4em;
+            font-family: Arial, sans-serif;
+        }
+
+        h1 {
+            position: relative;
+            color: #BBE0E1;
+            display: flex;
+            font-size: 4em;
+            justify-content: center;
+        }
+
+        .descri {
+            display: flex;
+            justify-content: space-around;
+        }
+
+        button {
+            height: 100px;
+            width: 100px;
+            font-size: 5em;
+            background: #1C3150;
+            border: #1C3150;
+        }
+
+        @media (max-width: 600px),
+        (max-height: 1000px) {
+            .clock {
+                font-size: 3em;
+            }
+
+            h1 {
+                font-size: 3em;
+            }
+
+            button {
+                height: 80px;
+                width: 80px;
+                font-size: 4em;
+            }
+        }
+
+        @media (max-width: 400px),
+        (max-height: 600px) {
+            .cronometro {
+                height: 50vh;
+            }
+
+            canvas {
+                width: 200px;
+                height: 200px;
+            }
+
+            .clock {
+                font-size: 2em;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .descri {
+                display: flex;
+                justify-content: center;
+                gap: 10px;
+            }
+
+            button {
+                height: 60px;
+                width: 60px;
+                font-size: 3em;
+            }
+        }
+
+
+    </style>
+</head>
+
+<body>
+    <div class="cronometro">
+        <canvas id="clockCanvas"></canvas>
+        <div class="clock" id="timeDisplay">00:00</div>
+    </div>
+
+    <h1 id="frase">Hora de Focar!</h1>
+
+    <div class="descri">
+        <button id="pausa">⏹️</button>
+        <button id="cancela">❌</button>
+    </div>
+
+    <script>
+        // Função para recuperar os tempos definidos da URL
+        function TemposDefinidos() {
+            const params = new URLSearchParams(window.location.search);
+            return {
+                cxtotal: parseInt(params.get('cxtotal')) || 25, // Valor padrão de 25 minutos
+                cxfoco: parseInt(params.get('cxfoco')) || 5, // Corrigido erro de digitação
+                cxintervalo: parseInt(params.get('cxintervalo')) || 5
+            };
+        }
+
+        const { cxtotal, cxfoco, cxintervalo } = TemposDefinidos();
+
+        // Configuração do cronômetro
+        const canvas = document.getElementById("clockCanvas");
+        const ctx = canvas.getContext("2d");
+        const timeDisplay = document.getElementById("timeDisplay");
+        const frase = document.getElementById("frase");
+
+        let timer;
+        let timeLeft = cxfoco * 60; // Começa com tempo de foco
+        let isFocando = true;
+        let isPaused = false; // Novo estado para controle de pausa
+
+        canvas.width = 300;
+        canvas.height = 300;
+        const cirtuloWi = canvas.width / 2;
+        const cirtuloHe = canvas.height / 2;
+        const radius = 155;
+
+        function Circle(progresso, cor, linha) {
+            ctx.beginPath();
+            ctx.arc(cirtuloWi, cirtuloHe, radius - linha * 2, -Math.PI / 2, -Math.PI / 2 + progresso * 2 * Math.PI);
+            ctx.strokeStyle = cor;
+            ctx.lineWidth = linha * 4;
+            ctx.lineCap = "round";
+            ctx.stroke();
+        }
+
+        function updateClock() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            let minutos = Math.floor((timeLeft % 3600) / 60);
+            let segundos = timeLeft % 60;
+            timeDisplay.textContent = `${String(minutos).padStart(2, '0')}:${String(segundos).padStart(2, '0')}`;
+
+            let progresso = timeLeft / (isFocando ? cxfoco * 60 : cxintervalo * 60);
+            Circle(progresso, "#4D6489", 5);
+
+            if (timeLeft > 0 && !isPaused) {
+                timeLeft--;
+                timer = setTimeout(updateClock, 1000);
+            } else if (timeLeft === 0) {
+                alternarFocoIntervalo();
+            }
+        }
+
+        function alternarFocoIntervalo() {
+            isFocando = !isFocando;
+            timeLeft = isFocando ? cxfoco * 60 : cxintervalo * 60;
+            frase.textContent = isFocando ? "Hora de Focar!" : "Hora do descanso!";
+            updateClock();
+        }
+
+        // Inicializa o cronômetro
+        updateClock();
+
+        // Botões de controle
+        const btn = document.getElementById("pausa");
+        const cancelar = document.getElementById("cancela");
+
+        btn.addEventListener('click', () => {
+            if (!isPaused) {
+                clearTimeout(timer);
+                isPaused = true;
+                btn.textContent = "▶️"; // Ícone de play
+            } else {
+                isPaused = false;
+                btn.textContent = "⏹️"; // Ícone de pause
+                updateClock();
+            }
+        });
+
+        cancelar.addEventListener('click', () => {
+            clearTimeout(timer);
+            isFocando = true;
+            timeLeft = cxfoco * 60;
+            frase.textContent = "Hora de Focar!";
+            btn.textContent = "⏹️";
+            isPaused = false;
+            updateClock();
+        });
+    </script>
+</body>
+
+
+</html>

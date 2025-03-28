@@ -1,0 +1,202 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>FocusFlow</title>
+</head>
+
+<style>
+    body {
+        background: #1C3150;
+        margin: 0;
+        height: 75vh; 
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between; 
+    }
+
+    h1 {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        font-size: 300px;
+        color: #BBE0E1;
+        flex: 1; 
+        text-align: center;
+    }
+
+    div {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        position: absolute;
+        bottom: 90px; 
+        width: 100%;
+    }
+
+    button {
+        width: 425px;
+        height: 113px;
+        background: #4D6489;
+        font-size: 80px;
+        border-radius: 124.5px;
+        border: #4D6489;
+        color: white;
+    }
+
+    dialog{
+        margin-top: 150px;
+        width: 70vh;
+        height: 70vh;
+        background: #4D6489;
+        display: flex;
+        flex-direction: column;
+        justify-content: space-between;
+        border-radius: 100px;
+        display: none;
+    }
+
+    h2{
+        color: #BBE0E1;
+        font-size: 60px;
+        display: flex;
+        justify-content: center;
+        text-align: center;
+    }
+
+    form{
+        top:100px;
+        padding: 100px 100px;
+        display: flex;
+        flex-direction: column;
+        position: absolute;
+        bottom: 100px; 
+        width: 70%;
+        height: 50%;
+        font-size: 30px;
+        color: #BBE0E1;
+    }
+
+    input{
+        height: 200px;
+        border-radius: 124.5px;
+        font-size: 30px;
+    }
+
+    @media (max-width: 600px),
+        (max-height: 1000px) {
+            h1 {
+                font-size: 50px;
+            }
+
+            button {
+                width: 250px;
+                height: 80px;
+                font-size: 40px;
+            }
+
+            dialog {
+                width: 80vw;
+                height: 60vh;
+                border-radius: 50px;
+            }
+
+            h2 {
+                font-size: 40px;
+            }
+
+            form {
+                font-size: 20px;
+                padding: 50px;
+            }
+
+            input {
+                height: 100px;
+                font-size: 20px;
+            }
+        }
+
+        @media (max-width: 400px),
+        (max-height: 600px) {
+            h1 {
+                font-size: 30px;
+            }
+
+            button {
+                width: 200px;
+                height: 60px;
+                font-size: 30px;
+            }
+
+            dialog {
+                width: 90vw;
+                height: 50vh;
+                border-radius: 30px;
+            }
+
+            h2 {
+                font-size: 30px;
+            }
+
+            form {
+                font-size: 16px;
+                padding: 30px;
+            }
+
+            input {
+                height: 80px;
+                font-size: 16px;
+            }
+        }
+</style>
+
+
+<body>
+    <h1>Bem-Vindo ao <br /> FocusFlow!</h1>
+
+    <div>
+        <button id="comecar">Começar</button>
+    </div>
+
+    <dialog id="dialo">
+        <h2>Defina os tempos:</h2>
+        <form id="formulario" action="pomodora.html" method="get">
+            Tempo total que vai ficar na atividade:<br />
+            <input type="number" name="cxtotal" /><br />
+            Tempo de foco:<br />
+            <input type="number" name="cxfoco" /><br />
+            Tempo de intervalo:<br />
+            <input type="number" name="cxintervalo" /><br />
+            <input type="submit" id="iniciar" value="Iniciar">
+        </form>
+    </dialog>
+
+    <script>
+        const comecar = document.getElementById('comecar');
+        const dialo = document.getElementById('dialo');
+        const formulario = document.getElementById('formulario');
+        const iniciar = document.getElementById('iniciar');
+
+        window.onload = () => {
+            dialo.close();
+        };
+        comecar.addEventListener('click', () => {
+            dialo.style.display = 'block';
+            dialo.showModal();
+        });
+
+        formulario.addEventListener('submit', (event) => {
+            event.preventDefault();
+            const cxtotal = formulario.elements['cxtotal'].value;
+            const cxfoco = formulario.elements['cxfoco'].value;
+            const cxintervalo = formulario.elements['cxintervalo'].value;
+            window.location.href = `pomodora.html?cxtotal=${cxtotal}&cxfoco=${cxfoco}&cxintervalo=${cxintervalo}`;
+
+        });
+    </script>
+</body>
+
+</html>
